@@ -10,6 +10,26 @@ def index(request):
 
 
 def login(request):
+    if request.method == 'POST':
+        # Retrieve form data from the POST request
+        username = request.POST['username']
+        password = request.POST['password']
+
+        # auth.authenticate() checks the provided username and password against the database
+        # If the credentials are correct, it returns a User object; otherwise, it returns None
+        user = auth.authenticate(username=username, password=password)
+
+        # Check if authentication was successful
+        if user is not None:
+            # auth.login() saves the user's ID in the session, effectively logging the user in for the current session
+            auth.login(request, user)
+            # Redirect to the homepage
+            return redirect('/')
+        else:
+            # If authentication fails, display an error message and redirect to the login page
+            messages.info(request, 'Credentials Invalid')
+            return redirect('login')
+
     return render(request, 'login.html')
 
 
@@ -25,17 +45,18 @@ def signup(request):
         if password == password2:
             # Check if the email already exists in the database
             if User.objects.filter(email=email).exists():
-                messages.info(request, "Email already exists.")
-                return redirect('signup')  # Redirect to signup page to correct the input
+                messages.info(request, "Email already exists")
+                # Redirect to signup page to correct the input
+                return redirect('signup')
             # Check if the username already exists in the database
             elif User.objects.filter(username=username).exists():
-                messages.info(request, 'Username already exists.')
+                messages.info(request, 'Username already exists')
                 return redirect('signup')
             else:
                 # Create a new user if email and username are unique
                 user = User.objects.create_user(
                     username=username, email=email, password=password)
-                user.save() # Save the user to the database
+                user.save()  # Save the user to the database
 
                 # Authenticate the newly created user
                 user_login = auth.authenticate(
@@ -45,7 +66,7 @@ def signup(request):
                 return redirect('/')
         else:
             # If passwords do not match, show an error message
-            messages.info(request, "Passwords do not match.")
+            messages.info(request, "Passwords do not match")
             return redirect('signup')
     else:
         return render(request, 'signup.html')
