@@ -1,12 +1,24 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
+from .models import Movie  # Import the Movie model to query movie data
 
 # Create your views here.
 
 
 def index(request):
-    return render(request, 'index.html')
+    # Retrieve all movie objects from the database
+    movies = Movie.objects.all()
+
+    # Create a context dictionary to pass data to the template
+    # The key 'movies' is used to reference the movie data in the template
+    context = {
+        'movies': movies,
+    }
+
+    # Render the 'index.html' template with the context data
+    # 'context' contains the data passed to the template
+    return render(request, 'index.html', context)
 
 
 def login(request):
