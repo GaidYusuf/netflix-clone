@@ -34,7 +34,7 @@ def login(request):
 
 
 def signup(request):
-    # retrieve form data from the POST request
+    # Retrieve form data from the POST request
     if request.method == 'POST':
         email = request.POST['email']
         username = request.POST['username']

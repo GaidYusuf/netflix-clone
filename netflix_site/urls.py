@@ -14,10 +14,18 @@ Including another URLconf
     1. Import the include() function: from django.urls import include, path
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
-from django.contrib import admin
+from django.contrib import admin  #  Admin interface to allow manage application's data through a web interface
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static  # This function is used to serve static (e.g., CSS, JavaScript) and media files (e.g., images) during development
 
+# Define the list of URL patterns that route URLs to views
 urlpatterns = [
-    path('admin/', admin.site.urls),
-    path('', include('core.urls'))
+    path('admin/', admin.site.urls),  # Route for the admin interface. Access this at '/admin/' URL
+    path('', include('core.urls'))  # Include the URL configurations from the 'core' app
 ]
+
+# Append URL patterns to serve media files during development
+# static() is used to serve media files. settings.MEDIA_URL is the base URL for media files.
+# settings.MEDIA_ROOT is the filesystem path where media files are stored.
+urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
