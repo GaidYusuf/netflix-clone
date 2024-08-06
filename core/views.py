@@ -1,8 +1,11 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
-from .models import Movie  # Import the Movie model to query movie data
+from .models import Movie, MovieList  # Import the Movie model to query movie data
 from django.contrib.auth.decorators import login_required
+from django.http import JsonResponse
+from django.shortcuts import get_object_or_404
+import re
 
 # Create your views here.
 
@@ -23,10 +26,13 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-@login_required(login_url='login')  # Ensure the user is logged in; redirect to 'login' if not
+# Ensure the user is logged in; redirect to 'login' if not
+@login_required(login_url='login')
 def movie(request, pk):
-    movie_uuid = pk  # Get the movie UUID from the URL parameter `pk`
-    movie_details = Movie.objects.get(uu_id=movie_uuid)  # Fetch the movie details from the database using the UUID
+    # Get the movie UUID from the URL parameter `pk`
+    movie_uuid = pk  
+    # Fetch the movie details from the database using the UUID
+    movie_details = Movie.objects.get(uu_id=movie_uuid)
 
     context = {
         'movie_details': movie_details
@@ -57,6 +63,12 @@ def login(request):
             return redirect('login')
 
     return render(request, 'login.html')
+
+
+@login_required(login_url='login')
+def logout(request):
+    auth.logout(request)
+    return redirect('login')
 
 
 def signup(request):
@@ -97,6 +109,36 @@ def signup(request):
     else:
         return render(request, 'signup.html')
 
+@login_required(login_url='login')
+def add_to_list(request):
+    if request.method == 'POST':
+        # Retrieve the movie URL from the POST data
+        movie_url = request.POST.get('movie_id')
+        
+        # Define a regex pattern to match UUID format
+        uuid_pattern = r'[0-9a-f]{8}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{4}-[0-9a-f]{12}'
+        
+        # Search for the UUID in the provided movie URL
+        match = re.search(uuid_pattern, movie_url)
+        movie_id = match.group() if match else None  # Extract the UUID if a match is found
+        
+        # Retrieve the Movie object or return a 404 error if not found
+        movie = get_object_or_404(Movie, uu_id=movie_id)
+        
+        # Get or create a MovieList entry for the authenticated user and the movie
+        movie_list, created = MovieList.objects.get_or_create(owner_user=request.user, movie=movie)
+        
+        if created:
+            # If the entry was created, return a success message
+            response_data = {'status': 'success', 'message': 'Added ✓'}
+        else:
+            # If the entry already exists, return an informational message
+            response_data = {'status': 'info', 'message': 'Movie already in list'}
+        
+        # Return the response as JSON
+        return JsonResponse(response_data)
+    else:
+        return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-def add_to_list():
+def my_list():
     pass

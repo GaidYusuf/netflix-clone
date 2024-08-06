@@ -4,6 +4,7 @@ from django.conf import settings
 
 
 class Movie(models.Model):
+    '''Model representing a movie with details such as title, description, release_date, genre, length, image_card, image_cover, video and movie_views.'''
 
     # Defining genre choices as a list of tuples
     # Each tuple contains:
@@ -18,6 +19,7 @@ class Movie(models.Model):
         ('science_fiction', 'Science Fiction'),
         ('fantasy', 'Fantasy')
     ]
+                        
 
     # Fields for the Movie model
     uu_id = models.UUIDField(default=uuid.uuid4)  # Generates a unique identifier for each movie using UUID.
@@ -34,4 +36,11 @@ class Movie(models.Model):
     def __str__(self):
         return self.title
 
+class MovieList(models.Model):
+    '''Model representing a list of movies associated with a user'''
+    # 'owner_user' is a foreign key to user model (Django's built in 'User' model which is part of the django.contrib.auth framework)
+    owner_user = models.ForeignKey(settings.AUTH_USER_MODEL, on_delete=models.CASCADE)  # When the user is deleted, also delete their movie list
+
+    # 'movie' is a foreign key to the Movie model, representing the movie in the list.
+    movie = models.ForeignKey(Movie, on_delete=models.CASCADE)  # When the movie is deleted, also delete it from the list
     
