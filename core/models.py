@@ -1,5 +1,6 @@
 from django.db import models
 import uuid
+from django.conf import settings
 
 
 class Movie(models.Model):
@@ -18,7 +19,8 @@ class Movie(models.Model):
         ('fantasy', 'Fantasy')
     ]
 
-    uu_id = models.UUIDField(default=uuid.uuid4)
+    # Fields for the Movie model
+    uu_id = models.UUIDField(default=uuid.uuid4)  # Generates a unique identifier for each movie using UUID.
     title = models.CharField(max_length=255)
     description = models.TextField()
     release_date = models.DateField()
@@ -31,4 +33,5 @@ class Movie(models.Model):
 
     def __str__(self):
         return self.title
+
     

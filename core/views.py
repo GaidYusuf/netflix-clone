@@ -2,10 +2,12 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.models import User, auth
 from django.contrib import messages
 from .models import Movie  # Import the Movie model to query movie data
+from django.contrib.auth.decorators import login_required
 
 # Create your views here.
 
 
+@login_required(login_url='login')
 def index(request):
     # Retrieve all movie objects from the database
     movies = Movie.objects.all()
@@ -13,12 +15,24 @@ def index(request):
     # Create a context dictionary to pass data to the template
     # The key 'movies' is used to reference the movie data in the template
     context = {
-        'movies': movies,
+        'movies': movies,  # Pass the movies data to the index.html template
     }
 
     # Render the 'index.html' template with the context data
     # 'context' contains the data passed to the template
     return render(request, 'index.html', context)
+
+
+@login_required(login_url='login')  # Ensure the user is logged in; redirect to 'login' if not
+def movie(request, pk):
+    movie_uuid = pk  # Get the movie UUID from the URL parameter `pk`
+    movie_details = Movie.objects.get(uu_id=movie_uuid)  # Fetch the movie details from the database using the UUID
+
+    context = {
+        'movie_details': movie_details
+    }
+
+    return render(request, 'movie.html', context)
 
 
 def login(request):
