@@ -140,5 +140,32 @@ def add_to_list(request):
     else:
         return JsonResponse({'status': 'error', 'message': 'Invalid request'}, status=400)
 
-def my_list():
-    pass
+@login_required(login_url='login')
+def my_list(request):
+    movie_list = MovieList.objects.filter(owner_user=request.user)
+    user_movie_list = []
+    
+    for movie in movie_list:
+        user_movie_list.append(movie.movie)
+
+    context = {
+        'movies': user_movie_list
+    }
+    return render(request, 'my_list.html', context)
+
+@login_required(login_url='login')
+def search(request):
+    if request.method == 'POST':
+        search_term = request.POST['search_term']
+
+        # Filter the Movie objects where the title contains the search term
+        #'icontains checks if a field contains a certain substring, ignoring case sensitivity.
+        movies = Movie.objects.filter(title__icontains=search_term)
+
+        context = {
+            'movies': movies,
+            'search_term': search_term,
+        }
+        return render(request, 'search.html', context)
+    else:
+        return redirect('/')
