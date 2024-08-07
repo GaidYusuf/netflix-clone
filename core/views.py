@@ -5,20 +5,23 @@ from .models import Movie, MovieList  # Import the Movie model to query movie da
 from django.contrib.auth.decorators import login_required
 from django.http import JsonResponse
 from django.shortcuts import get_object_or_404
-import re
+import re, random
 
 # Create your views here.
 
-
+# Ensure the user is logged in; redirect to 'login' if not
 @login_required(login_url='login')
 def index(request):
     # Retrieve all movie objects from the database
     movies = Movie.objects.all()
+    # Get a random movie to display its cover on index page
+    featured_movie = movies[random.randrange(0, len(movies))]
 
     # Create a context dictionary to pass data to the template
     # The key 'movies' is used to reference the movie data in the template
     context = {
         'movies': movies,  # Pass the movies data to the index.html template
+        'featured_movie': featured_movie,
     }
 
     # Render the 'index.html' template with the context data
@@ -26,7 +29,6 @@ def index(request):
     return render(request, 'index.html', context)
 
 
-# Ensure the user is logged in; redirect to 'login' if not
 @login_required(login_url='login')
 def movie(request, pk):
     # Get the movie UUID from the URL parameter `pk`
@@ -169,3 +171,14 @@ def search(request):
         return render(request, 'search.html', context)
     else:
         return redirect('/')
+
+@login_required(login_url='login')
+def genre(request, pk):
+    movie_genre = pk
+    movies = Movie.objects.filter(genre=movie_genre)
+
+    context = {
+        'movies': movies,
+        'movie_genre': movie_genre,
+    }
+    return render(request, 'genre.html', context)

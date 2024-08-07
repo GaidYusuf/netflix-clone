@@ -1,5 +1,4 @@
 {% load static %}
-
 <!DOCTYPE html>
 <html lang="en">
 
@@ -10,13 +9,14 @@
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" type="text/css" href="{% static 'assets/style.css' %}" />
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
-   
+    <script src="https://cdn.jsdelivr.net/npm/color-thief@2.3.2/dist/color-thief.umd.js"></script>
 </head>
 
 <body class="text-white" style="background-color: #141414;">
     <header class="p-5 flex justify-between items-center">
-        <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logonetflix.png" height="30" alt="Netflix Logo" width="110">
-        
+        <a href="/">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/7/7a/Logonetflix.png" height="30" alt="Netflix Logo" width="110">
+        </a>
         
         <nav class="flex space-x-5">
             <span><a href="/">Home</a></span>
@@ -47,14 +47,14 @@
             </form>
             <div class="relative">
                 <a href="#" class="block p-2">Welcome, {{user.username}}</a>
-                <a href="/logout" class="block p-2">Logout</a>
+                <a href="/logout" class="block p-2">Log out</a>
             </div>
         </div>
     </header>
     <section class="relative py-20 px-10" style="background-image: url('{{featured_movie.image_cover.url}}'); background-size: cover; background-position: center;">
         <div>
-            <h1 style="color: black;" class="text-5xl mb-5">{{featured_movie.title}}</h1>
-            <p style="color: black;" class="mb-5">{{featured_movie.description}}</p>
+            <h1 class="text-5xl mb-5 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">{{featured_movie.title}}</h1>
+            <p class="mb-5 text-white" style="text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.6);">{{featured_movie.description}}</p>
             <div class="flex space-x-4">
                 <a href="/movie/{{featured_movie.uu_id}}">
                     <button class="bg-red-600 text-white p-2 px-5 rounded hover:bg-red-500">Play</button>
@@ -62,6 +62,7 @@
             </div>
         </div>
     </section>
+    
     <section class="py-10 px-5">
     
         <h2 class="text-xl mb-5">Popular on Netflix</h2>
@@ -82,8 +83,6 @@
             </div>
             {% endfor %}
     </section>
-    
-    
 
     <!-- Modal -->
     <div class="modal" id="movieModal">
