@@ -13,6 +13,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 from pathlib import Path
 import os
 from decouple import config
+import dj_database_url
 
 print(os.path.abspath(__file__))
 
@@ -88,16 +89,16 @@ WSGI_APPLICATION = 'netflix_site.wsgi.application'
 #     }
 # }
 
-DATABASES = {
-    'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
-        'NAME': 'netflixdb',
-        'USER': 'netflix_user',
-        'PASSWORD': 'netflix123',
-        'HOST': 'localhost',
-        'PORT': '5432',
-    }
-}
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'netflixdb',
+#         'USER': 'netflix_user',
+#         'PASSWORD': 'netflix123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
 
 # AWS RDS Database
 # DATABASES = {
@@ -111,6 +112,9 @@ DATABASES = {
 #     }
 # }
 
+DATABASES = {
+    'default': dj_database_url.parse('postgresql://bikxiffkklpjujzo:ilvhekvpnxlgmfhq@18.130.59.221:8001/lorwrrmwyakqbzaq')
+}
 
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
