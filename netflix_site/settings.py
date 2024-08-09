@@ -12,6 +12,7 @@ https://docs.djangoproject.com/en/5.0/ref/settings/
 
 from pathlib import Path
 import os
+from decouple import config
 
 print(os.path.abspath(__file__))
 
@@ -23,13 +24,12 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 # See https://docs.djangoproject.com/en/5.0/howto/deployment/checklist/
 
 # SECURITY WARNING: keep the secret key used in production secret!
-SECRET_KEY = 'django-insecure-375+8+l_*g$7-yh1cjwa7ro2qh7hl)k-7mr^s33)y#lh0zo=h#'
+SECRET_KEY = config('SECRET_KEY')
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = config('DEBUG', cast=bool)
 
 ALLOWED_HOSTS = ['*']
-print("ALLOWED_HOSTS:", ALLOWED_HOSTS)
 
 
 # Application definition
@@ -85,13 +85,25 @@ WSGI_APPLICATION = 'netflix_site.wsgi.application'
 #     }
 # }
 
+# DATABASES = {
+#     'default': {
+#         'ENGINE': 'django.db.backends.postgresql_psycopg2',
+#         'NAME': 'netflixdb',
+#         'USER': 'netflix_user',
+#         'PASSWORD': 'netflix123',
+#         'HOST': 'localhost',
+#         'PORT': '5432',
+#     }
+# }
+
+# AWS RDS Database
 DATABASES = {
     'default': {
-        'ENGINE': 'django.db.backends.postgresql_psycopg2',
+        'ENGINE': 'django.db.backends.postgresql',
         'NAME': 'netflixdb',
         'USER': 'netflix_user',
         'PASSWORD': 'netflix123',
-        'HOST': 'localhost',
+        'HOST': 'netflixdb.cbaqcgsk4q2g.eu-north-1.rds.amazonaws.com',
         'PORT': '5432',
     }
 }
@@ -142,5 +154,3 @@ MEDIA_ROOT = os.path.join(BASE_DIR, 'media')
 # https://docs.djangoproject.com/en/5.0/ref/settings/#default-auto-field
 
 DEFAULT_AUTO_FIELD = 'django.db.models.BigAutoField'
-
-
