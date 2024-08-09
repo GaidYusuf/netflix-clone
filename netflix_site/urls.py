@@ -28,4 +28,9 @@ urlpatterns = [
 # Append URL patterns to serve media files during development
 # static() is used to serve media files. settings.MEDIA_URL is the base URL for media files.
 # settings.MEDIA_ROOT is the filesystem path where media files are stored.
-urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+# urlpatterns = urlpatterns + static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
+
+if settings.DEBUG:
+    urlpatterns += static(settings.MEDIA_URL, document_root = settings.MEDIA_ROOT)
+    urlpatterns += static(settings.STATIC_URL, document_root = settings.STATIC_URL)
